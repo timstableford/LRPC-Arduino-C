@@ -1,9 +1,12 @@
 #include "Object.h"
 #include "RPC.h"
+#include "StreamParser.h"
 #include "NetworkUtil.h"
 
 #include <stdarg.h>
 #include <string.h>
+
+#define EXTRA_TYPES 1
 
 typedef struct {
 	Object::TYPES type;
@@ -50,13 +53,18 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	va_list argp;
 	uint16_t fmtLen = strlen(fmt);
 	
-	Argument args[fmtLen];
+	uint16_t numArgs = fmtLen + EXTRA_TYPES;
+	Argument args[numArgs];
+	
+	// Setup function ID
+	args[0].type = Object::T_UINT16;
+	args[0].data.int16 = functionID;
 	
 	va_start(argp, fmt);
 	
 	// Temporarily store the arguments in a list
-	for(uint16_t i = 0; i < fmtLen; i++) {
-		args[i].type = this->getType(fmt[i]);
+	for(uint16_t i = EXTRA_TYPES; i < numArgs; i++) {
+		args[i].type = this->getType(fmt[i - EXTRA_TYPES]);
 		switch(args[i].type) {
 			case Object::T_STRING:
 				args[i].data.str = va_arg(argp, char *);
@@ -88,8 +96,8 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	va_end(argp);
 	
 	// Calculate the length needed for the object buffers before including string lengths
-	uint16_t length = 0, indexSize = 0, numStr = 0;
-	for(uint8_t i = 0; i < fmtLen; i++) {
+	uint16_t length = 0, indexSize = 0, numStr = 0; //index size start as 1 for function call id
+	for(uint8_t i = 0; i < numArgs; i++) {
 		if(args[i].type == Object::T_STRING) {
 			length += strlen(args[i].data.str) + 1;
 			numStr++;
@@ -106,7 +114,7 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	
 	//Propogate the buffer index table with all the types and the string lengths
 	uint16_t stringIndex = 0;
-	for(uint8_t i = 0; i < fmtLen; i++) {
+	for(uint8_t i = 0; i < numArgs; i++) {
 		indexTable[i] = args[i].type;
 		if(indexTable[i] == Object::T_STRING) {
 			indexTable[indexSize + stringIndex] = strlen(args[i].data.str) + 1;
@@ -115,7 +123,7 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	}
 	
 	// Put the buffer and index table into and object
-	Object o(indexTable, fmtLen, buffer);
+	Object o(indexTable, numArgs, buffer);
 	
 	// For each item in the object, assign it's data from the temporary buffer
 	for(uint8_t i = 0; i < o.getNumObjects(); i++) {
@@ -149,6 +157,8 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 				return 0;
 		}
 	}
+	
+	StreamParser::PacketHeader ph = StreamParser::makePacket(TYPE_FUNCTION_CALL, o.getSize());
 	
 	return o.writeTo(this->writer);
 }

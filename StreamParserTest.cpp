@@ -82,6 +82,8 @@ int main(int argc, char *argv[]) {
 	while(p.parse() >= 0);
 	
 	RPC rpc(writer);
-	rpc.call(10, "cCds", -10, 10, 320, "hello world");
+	if(rpc.call(10, "cCds", -10, 10, 320, "hello world") <= 0) {
+		printf("error doing rpc call");
+	}
 	printf("\n");
 }

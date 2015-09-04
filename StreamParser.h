@@ -3,6 +3,8 @@
 
 #include "NetworkUtil.h"
 
+#define TYPE_FUNCTION_CALL 8
+
 typedef void (*TypeHandlerCallback)(uint8_t *buffer, uint16_t size);
 
 class StreamParser {
