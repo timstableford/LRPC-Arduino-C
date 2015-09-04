@@ -1,1 +1,1 @@
-g++ -std=c++98 Object.cpp StreamParser.cpp StreamParserTest.cpp -Wall -DLINUX -o stest
+g++ -std=c++98 Object.cpp StreamParser.cpp RPC.cpp StreamParserTest.cpp -Wall -DLINUX -o stest

@@ -45,7 +45,7 @@ Object::Object(uint8_t *buffer) {
 	this->indexTable = &(buffer[1]);
 	this->numObjects = buffer[0];
 	if(numObjects > 0) {
-		uint8_t stringCount = this->stringNum(this->numObjects);
+		uint8_t stringCount = this->strNum(this->numObjects);
 		this->dataTable = &(buffer[this->numObjects + (stringCount * this->typeSize(T_STRING))]);
 	} else {
 		this->dataTable = 0;
@@ -55,7 +55,7 @@ Object::Object(uint8_t *buffer) {
 Object::~Object() {
 }
 
-uint8_t Object::stringNum(uint8_t index) {
+uint8_t Object::strNum(uint8_t index) {
 	uint8_t count = 0;
 	for(uint8_t i = 0; i < index; i++) {
 		if(this->indexTable[i] == T_STRING) {
@@ -90,12 +90,23 @@ uint16_t Object::indexOf(uint8_t index) {
 }
 
 uint8_t Object::strlenAt(uint8_t index) {
-	uint8_t sizeIndex = this->numObjects + this->stringNum(index);
+	uint8_t sizeIndex = this->numObjects + this->strNum(index);
 	return this->indexTable[sizeIndex];
 }
 
 char *Object::strAt(uint8_t index) {
 	return (char *)pointerAt(index);
+}
+
+uint8_t Object::getNumObjects() {
+	return this->numObjects;
+}
+	
+uint8_t Object::objectTypeAt(uint8_t index) {
+	if(this->numObjects <= 0 || index >= this->numObjects) {
+		return T_NONE;
+	}
+	return this->indexTable[index];
 }
 	
 bool Object::strAt(uint8_t index, char *str, uint16_t stringLen) {
@@ -125,48 +136,23 @@ uint16_t Object::getDataSize() {
 }
 
 uint16_t Object::getSize() {
-	return 1 + this->numObjects + (this->typeSize(T_STRING) * stringNum(this->numObjects)) + this->getDataSize();
+	return 1 + this->numObjects + (this->typeSize(T_STRING) * strNum(this->numObjects)) + this->getDataSize();
 }
 
-uint16_t Object::writeTo(ByteWriter writer) {
+uint16_t Object::writeTo(NetworkWriter writer) {
 	if(this->numObjects == 0 || this->dataTable == NULL) {
 		return 0;
 	}
 	
 	uint16_t written = 0;
 	
-	written += writer(this->numObjects) ? 1 : 0;
+	written += writer(&(this->numObjects), 1) ? 1 : 0;
 	
-	for(uint8_t i = 0; i < this->numObjects; i++) {
-		written += writer(this->indexTable[i]) ? 1 : 0;
-	}
+	uint16_t size = this->numObjects + this->strNum(this->numObjects);
+	written += writer(this->indexTable, size) ? size : 0;
 	
-	uint16_t size = this->getDataSize();
-	for(uint16_t i = 0; i < size; i++) {
-		written += writer(this->dataTable[i]) ? 1 : 0;
-	}
-	
-	return written;
-}
-
-uint16_t Object::writeTo(uint8_t *buffer) {
-	if(this->numObjects == 0 || this->dataTable == NULL) {
-		return 0;
-	}
-	
-	buffer[0] = this->numObjects;
-	uint16_t written = 1;
-	
-	for(uint8_t i = 0; i < this->numObjects; i++) {
-		buffer[i] = this->indexTable[i];
-		written++;
-	}
-	
-	uint16_t size = this->getDataSize();
-	for(uint16_t i = 0; i < size; i++) {
-		buffer[i] = this->dataTable[i];
-		written++;
-	}
+	size = this->getDataSize();
+	written += writer(this->dataTable, size) ? size : 0;
 	
 	return written;
 }
@@ -201,9 +187,5 @@ const uint8_t Object::typesArray[][NUM_TYPES] = {
 	{ 0x05, 0x02 }, //uint16_t
 	{ 0x06, 0x04 }, //int32_t
 	{ 0x07, 0x04 }, //uint32_t
-	{ 0x08, 0x08 }, //int64_t
-	{ 0x09, 0x09 }, //uint64_t
-	{ 0x0A, 0x10 }, //int128_t
-	{ 0x0B, 0x10 }, //uint128_t
 	{ 0x0C, 0x04 } //float
 };

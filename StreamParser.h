@@ -3,7 +3,6 @@
 
 #include "NetworkUtil.h"
 
-typedef int16_t (*ReadSerial)();
 typedef void (*TypeHandlerCallback)(uint8_t *buffer, uint16_t size);
 
 class StreamParser {
@@ -24,7 +23,7 @@ class StreamParser {
 			TypeHandlerCallback callback;
 		} TypeHandler;
 	
-		StreamParser(ReadSerial serialReader,
+		StreamParser(NetworkReader serialReader,
 			uint8_t *buffer,
 			uint16_t bufferSize,
 			TypeHandler *handlers,
@@ -36,7 +35,7 @@ class StreamParser {
 		static PacketHeader makePacket(uint16_t type, uint16_t size);
 		static bool parseHeader(PacketHeader &ph);
 	private:
-		ReadSerial serialReader;
+		NetworkReader serialReader;
 		PacketHeader packetHeader;
 		ParserState state;
 		void setState(ParserState st);

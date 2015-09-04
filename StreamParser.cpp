@@ -2,7 +2,7 @@
 #include "NetworkUtil.h"
 #include "Object.h"
 
-StreamParser::StreamParser(ReadSerial serialReader,
+StreamParser::StreamParser(NetworkReader serialReader,
 		uint8_t *buffer,
 		uint16_t bufferSize,
 		TypeHandler *handlers,

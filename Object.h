@@ -12,10 +12,11 @@ class Object {
 		
 		uint16_t getDataSize();
 		uint16_t getSize();
-		uint8_t typeSize(uint8_t type);
+		static uint8_t typeSize(uint8_t type);
+		uint8_t getNumObjects();
+		uint8_t objectTypeAt(uint8_t index);
 		
-		uint16_t writeTo(ByteWriter writer);
-		uint16_t writeTo(uint8_t *buffer);
+		uint16_t writeTo(NetworkWriter writer);
 		
 		int8_t int8At(uint8_t index);
 		bool int8At(uint8_t index, int8_t data);
@@ -40,6 +41,7 @@ class Object {
 		static const uint8_t typesArray[][NUM_TYPES];
 		
 		enum TYPES {
+			T_NONE,
 			T_STRING = 0x01,
 			T_INT8 = 0x02,
 			T_UINT8 = 0x03,
@@ -56,7 +58,7 @@ class Object {
 		uint8_t *dataTable;
 		uint16_t indexOf(uint8_t objIndex);
 		void *pointerAt(uint8_t index);
-		uint8_t stringNum(uint8_t index);
+		uint8_t strNum(uint8_t index);
 };
 
 #endif

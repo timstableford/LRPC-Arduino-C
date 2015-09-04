@@ -36,6 +36,7 @@
 # define htonl(n) ntohs(n)
 #endif
 
-typedef bool (*ByteWriter)(uint8_t data);
+typedef bool (*NetworkWriter)(uint8_t *data, uint16_t length);
+typedef int16_t (*NetworkReader)();
 
 #endif
