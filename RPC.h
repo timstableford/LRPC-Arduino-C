@@ -4,16 +4,25 @@
 #include "Object.h"
 #include "NetworkUtil.h"
 
+typedef void (*RPCCallback)(Object &obj);
+
 class RPC {
 	public:
-		RPC(NetworkWriter writer);
+		typedef struct {
+			uint16_t functionID;
+			RPCCallback callback;
+		} RPCContainer;
+		RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs);
 		~RPC();
+		void typeHandlerCallback(uint8_t *buffer, uint16_t size);
 		
 		uint16_t call(uint16_t functionID, const char *fmt, ...);
 		
 	private:
 		Object::TYPES getType(char c);
 		NetworkWriter writer;
+		RPCContainer *rpcs;
+		uint16_t numRPCs;
 
 };
 

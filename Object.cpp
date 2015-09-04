@@ -15,6 +15,7 @@ bool Object::y(uint8_t index, x data) { \
 		return false; \
 	} \
 	\
+	printf("index = %d, data = 0x%x, fetch = 0x%x\n", index, data, this->y(index)); \
 	*pointer = ct(data); \
 	\
 	return true; \

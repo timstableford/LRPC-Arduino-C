@@ -21,8 +21,25 @@ typedef struct {
 	} data;
 } Argument;
 
-RPC::RPC(NetworkWriter writer) {
+void RPC::typeHandlerCallback(uint8_t *buffer, uint16_t size) {
+	Object obj(buffer);
+	if(obj.getNumObjects() > 0) {
+		if(obj.objectTypeAt(0) == Object::T_UINT16) {
+			for(uint16_t i = 0; i < this->numRPCs; i++) {
+				printf("%d:%d\n", this->rpcs[i].functionID, obj.uint16At(0));
+				if(this->rpcs[i].functionID == obj.uint16At(0)) {
+					this->rpcs[i].callback(obj);
+					break;
+				}
+			}
+		}
+	}
+}
+
+RPC::RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs) {
 	this->writer = writer;
+	this->rpcs = rpcs;
+	this->numRPCs = numRPCs;
 }
 
 RPC::~RPC() {
@@ -58,7 +75,7 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	
 	// Setup function ID
 	args[0].type = Object::T_UINT16;
-	args[0].data.int16 = functionID;
+	args[0].data.uint16 = functionID;
 	
 	va_start(argp, fmt);
 	
