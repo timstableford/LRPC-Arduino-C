@@ -6,8 +6,6 @@
 #include <stdio.h>
 #endif
 
-#define NUM_TYPES 12
-
 #if !defined(LINUX)
 # define __LITTLE_ENDIAN 1234
 # define BYTE_ORDER LITTLE_ENDIAN
@@ -36,7 +34,7 @@
 # define htonl(n) ntohs(n)
 #endif
 
-typedef bool (*NetworkWriter)(uint8_t *data, uint16_t length);
+typedef uint16_t (*NetworkWriter)(uint8_t *data, uint16_t length);
 typedef int16_t (*NetworkReader)();
 
 #endif

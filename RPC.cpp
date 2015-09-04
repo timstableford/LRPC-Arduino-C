@@ -160,5 +160,12 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	
 	StreamParser::PacketHeader ph = StreamParser::makePacket(TYPE_FUNCTION_CALL, o.getSize());
 	
-	return o.writeTo(this->writer);
+	uint16_t written = this->writer((uint8_t *)(&ph), sizeof(ph));
+	if(written < sizeof(ph)) {
+		return 0;
+	}
+	
+	written += o.writeTo(this->writer);
+	
+	return written;
 }

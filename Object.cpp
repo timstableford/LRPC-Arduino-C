@@ -149,10 +149,10 @@ uint16_t Object::writeTo(NetworkWriter writer) {
 	written += writer(&(this->numObjects), 1) ? 1 : 0;
 	
 	uint16_t size = this->numObjects + this->strNum(this->numObjects);
-	written += writer(this->indexTable, size) ? size : 0;
+	written += writer(this->indexTable, size);
 	
 	size = this->getDataSize();
-	written += writer(this->dataTable, size) ? size : 0;
+	written += writer(this->dataTable, size);
 	
 	return written;
 }

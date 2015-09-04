@@ -3,6 +3,8 @@
 
 #include "NetworkUtil.h"
 
+#define NUM_TYPES 8
+
 class Object {
 	public:
 		Object(uint8_t *indexTable, uint8_t numObjects, uint8_t *dataTable);

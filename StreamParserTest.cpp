@@ -31,11 +31,11 @@ int16_t streamReader() {
 	}
 }
 
-bool writer(uint8_t *data, uint16_t size) {
+uint16_t writer(uint8_t *data, uint16_t size) {
 	for(uint16_t i = 0; i < size; i++) {
 		printf("0x%x, ", data[i]);
 	}
-	return true;
+	return size;
 }
 
 void printHex(void *buffer, int length) {
