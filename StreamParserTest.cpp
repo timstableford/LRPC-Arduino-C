@@ -70,8 +70,8 @@ int main(int argc, char *argv[]) {
 	
 	char *stri = (char *)"hello world";
 	
-	uint8_t indexTable[] = { Object::T_UINT16, Object::T_INT16, Object::T_STRING, Object::T_FLOAT, (uint8_t)(strlen(stri) + 1) };
-	Object o(indexTable, 4);
+	uint8_t indexTable[] = { Object::T_UINT16, Object::T_INT16, Object::T_STRING, Object::T_FLOAT, Object::T_INT32, Object::T_INT64, (uint8_t)(strlen(stri) + 1) };
+	Object o(indexTable, 6);
 	
 	uint8_t dataBuffer[o.getDataSize()];
 	o.setDataBuffer(dataBuffer);
@@ -79,7 +79,19 @@ int main(int argc, char *argv[]) {
 	o.uint16At(0, functionID); //function id
 	o.int16At(1, theInt); //payload argument
 	o.strAt(2, stri, strlen(stri) + 1);
-	o.floatAt(3, theFloat);
+	if(!o.floatAt(3, theFloat)) {
+		printf("Failed to set float value\n");
+	}
+	o.int32At(4, 345589619);
+	o.int64At(5, 9384760934765065ll);
+	
+	if(o.int64At(5) != 9384760934765065ll) {
+		printf("Retrieved int64 does not equal actual A:%lld, R:%lld\n", (long long int)9384760934765065ll, (long long int)o.int64At(5));
+	}
+	
+	if(o.int32At(4) != 345589619) {
+		printf("Retrieved int32 does not equal actual\n");
+	}
 	
 	if(o.floatAt(3) != theFloat) {
 		printf("Retrieved float does not equal actual A:%f, R:%f\n", theFloat, o.floatAt(3));

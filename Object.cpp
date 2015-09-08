@@ -25,9 +25,11 @@ bool Object::y(uint8_t index, x data) { \
 INT_GETSET(int8_t, int8At, SIMPLE_FUNC, SIMPLE_FUNC)
 INT_GETSET(int16_t, int16At, htons, ntohs)
 INT_GETSET(int32_t, int32At, htonl, ntohl)
+INT_GETSET(int64_t, int64At, htonll, ntohll)
 INT_GETSET(uint8_t, uint8At, SIMPLE_FUNC, SIMPLE_FUNC)
 INT_GETSET(uint16_t, uint16At, htons, ntohs)
 INT_GETSET(uint32_t, uint32At, htonl, ntohl)
+INT_GETSET(uint64_t, uint64At, htonll, ntohll)
 
 Object::Object(uint8_t *indexTable, uint8_t numObjects, uint8_t *dataTable) {
 	this->indexTable = indexTable;
@@ -107,7 +109,8 @@ float Object::floatAt(uint8_t index) {
 		return 0;
 	}
 	
-	for(uint8_t i = 0; i < typeSize(T_FLOAT); i++) {
+	uint8_t size = typeSize(T_FLOAT);
+	for(uint8_t i = 0; i < size; i++) {
 		((uint8_t *)&v)[i] = p[i];
 	}
 	
@@ -216,5 +219,7 @@ const uint8_t Object::typesArray[][NUM_TYPES] = {
 	{ 0x05, 0x02 }, //uint16_t
 	{ 0x06, 0x04 }, //int32_t
 	{ 0x07, 0x04 }, //uint32_t
+	{ 0x08, 0x08 }, //int64_t
+	{ 0x09, 0x08 }, //uint64_t
 	{ 0x0C, 0x04 } //float
 };

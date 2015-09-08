@@ -18,6 +18,9 @@ typedef struct {
 		int16_t int16;
 		uint32_t uint32;
 		int32_t int32;
+		uint64_t uint64;
+		int64_t int64;
+		float flt;
 	} data;
 } Argument;
 
@@ -60,6 +63,12 @@ Object::TYPES RPC::getType(char c) {
 			return Object::T_INT32;
 		case 'L':
 			return Object::T_UINT32;
+		case 'm':
+			return Object::T_INT64;
+		case 'M':
+			return Object::T_UINT64;
+		case 'f':
+			return Object::T_FLOAT;
 		default:
 			return Object::T_NONE;
 	}
@@ -103,7 +112,15 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 			case Object::T_UINT32:
 				args[i].data.uint32 = (uint32_t)va_arg(argp, long);
 				break;
+			case Object::T_INT64:
+				args[i].data.int64 = (int64_t)va_arg(argp, long long);
+				break;
+			case Object::T_UINT64:
+				args[i].data.uint64 = (uint64_t)va_arg(argp, long long);
+				break;
 			case Object::T_FLOAT:
+				args[i].data.flt = (float)va_arg(argp, double);
+				break;
 			case Object::T_NONE:
 				return 0;
 		}
@@ -168,8 +185,16 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 			case Object::T_UINT32:
 				o.uint32At(i, args[i].data.uint32);
 				break;
-			case Object::T_NONE:
+			case Object::T_INT64:
+				o.int64At(i, args[i].data.int64);
+				break;
+			case Object::T_UINT64:
+				o.uint64At(i, args[i].data.uint64);
+				break;
 			case Object::T_FLOAT:
+				o.floatAt(i, args[i].data.flt);
+				break;
+			case Object::T_NONE:
 				return 0;
 		}
 	}

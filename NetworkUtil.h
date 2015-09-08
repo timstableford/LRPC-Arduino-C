@@ -15,10 +15,10 @@
 
 //Define ntohs and htons (2 byte)
 #if !defined(ntohs) && (BYTE_ORDER == LITTLE_ENDIAN)
-# define ntohs(n) ((((short)(n)) & 0xff00) >> 8 | (((short)(n)) & 0xff) << 8)
+# define ntohs(n) ((((int16_t)(n)) & 0xff00) >> 8 | (((int16_t)(n)) & 0xff) << 8)
 # define htons(n) ntohs(n)
 #elif !defined(ntohs)
-# define ntohs(n) ((short)(n))
+# define ntohs(n) ((int16_t)(n))
 # define htons(n) ntohs(n)
 #endif
 
@@ -30,8 +30,14 @@
                   |(((x)&0x000000ff)<<24))
 # define htonl(n) ntohl(n)
 #elif !defined(ntohl)
-# define ntohl(n) ((long)(n))
-# define htonl(n) ntohs(n)
+# define ntohl(n) ((int32_t)(n))
+# define htonl(n) ntohl(n)
+#endif
+
+//Define ntohll and htonll (8 byte)
+#if !defined(ntohll)
+#define htonll(x) ((1==htonl(1)) ? (x) : ((uint64_t)htonl((x) & 0xFFFFFFFF) << 32) | htonl((x) >> 32))
+#define ntohll(x) ((1==ntohl(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
 #endif
 
 typedef uint16_t (*NetworkWriter)(uint8_t *data, uint16_t length);

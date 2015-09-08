@@ -3,7 +3,7 @@
 
 #include "NetworkUtil.h"
 
-#define NUM_TYPES 8
+#define NUM_TYPES 10
 
 class Object {
 	public:
@@ -26,6 +26,8 @@ class Object {
 		bool int16At(uint8_t index, int16_t data);
 		int32_t int32At(uint8_t index);
 		bool int32At(uint8_t index, int32_t data);
+		int64_t int64At(uint8_t index);
+		bool int64At(uint8_t index, int64_t data);
 		
 		uint8_t uint8At(uint8_t index);
 		bool uint8At(uint8_t index, uint8_t data);
@@ -33,6 +35,8 @@ class Object {
 		bool uint16At(uint8_t index, uint16_t data);
 		uint32_t uint32At(uint8_t index);
 		bool uint32At(uint8_t index, uint32_t data);
+		uint64_t uint64At(uint8_t index);
+		bool uint64At(uint8_t index, uint64_t data);
 		
 		float floatAt(uint8_t index);
 		bool floatAt(uint8_t index, float data);
@@ -54,6 +58,8 @@ class Object {
 			T_UINT16 = 0x05,
 			T_INT32 = 0x06,
 			T_UINT32 = 0x07,
+			T_INT64 = 0x08,
+			T_UINT64 = 0x09,
 			T_FLOAT = 0x0C
 		};
 		
