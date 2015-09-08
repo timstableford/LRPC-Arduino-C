@@ -34,6 +34,9 @@ class Object {
 		uint32_t uint32At(uint8_t index);
 		bool uint32At(uint8_t index, uint32_t data);
 		
+		float floatAt(uint8_t index);
+		bool floatAt(uint8_t index, float data);
+		
 		uint8_t strlenAt(uint8_t index);
 		char *strAt(uint8_t index);
 		bool strAt(uint8_t index, char *str, uint16_t stringLen);

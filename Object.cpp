@@ -98,6 +98,35 @@ char *Object::strAt(uint8_t index) {
 	return (char *)pointerAt(index);
 }
 
+float Object::floatAt(uint8_t index) {
+	float v = 0;
+	
+	uint8_t *p = (uint8_t *)pointerAt(index);
+	
+	if(objectTypeAt(index) != T_FLOAT) {
+		return 0;
+	}
+	
+	for(uint8_t i = 0; i < typeSize(T_FLOAT); i++) {
+		((uint8_t *)&v)[i] = p[i];
+	}
+	
+	return v;
+}
+
+bool Object::floatAt(uint8_t index, float data) {
+	if(objectTypeAt(index) != T_FLOAT) {
+		return false;
+	}
+	
+	uint8_t *p = (uint8_t *)pointerAt(index);
+	for(uint8_t i = 0; i < typeSize(T_FLOAT); i++) {
+		p[i] = ((uint8_t *)&data)[i];
+	}
+	
+	return true;
+}
+
 uint8_t Object::getNumObjects() {
 	return this->numObjects;
 }

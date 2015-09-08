@@ -65,12 +65,13 @@ int main(int argc, char *argv[]) {
 	while(p.parse() >= 0);
 	
 	int16_t theInt = 400;
+	float theFloat = 213423.23466432;
 	uint16_t functionID = 1;
 	
 	char *stri = (char *)"hello world";
 	
-	uint8_t indexTable[] = { Object::T_UINT16, Object::T_INT16, Object::T_STRING, (uint8_t)(strlen(stri) + 1) };
-	Object o(indexTable, 3);
+	uint8_t indexTable[] = { Object::T_UINT16, Object::T_INT16, Object::T_STRING, Object::T_FLOAT, (uint8_t)(strlen(stri) + 1) };
+	Object o(indexTable, 4);
 	
 	uint8_t dataBuffer[o.getDataSize()];
 	o.setDataBuffer(dataBuffer);
@@ -78,6 +79,11 @@ int main(int argc, char *argv[]) {
 	o.uint16At(0, functionID); //function id
 	o.int16At(1, theInt); //payload argument
 	o.strAt(2, stri, strlen(stri) + 1);
+	o.floatAt(3, theFloat);
+	
+	if(o.floatAt(3) != theFloat) {
+		printf("Retrieved float does not equal actual A:%f, R:%f\n", theFloat, o.floatAt(3));
+	}
 	
 	if(o.int16At(1) != theInt) {
 		printf("Retrieved int does not equal actual A:%d R:%d\n", theInt, o.int16At(1));
