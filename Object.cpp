@@ -212,14 +212,14 @@ void *Object::pointerAt(uint8_t index) {
 }
 
 const uint8_t Object::typesArray[][NUM_TYPES] = {
-	{ 0x01, 0x01 }, //string
-	{ 0x02, 0x01 }, //int8_t
-	{ 0x03, 0x01 }, //uint8_t
-	{ 0x04, 0x02 }, //int16_t
-	{ 0x05, 0x02 }, //uint16_t
-	{ 0x06, 0x04 }, //int32_t
-	{ 0x07, 0x04 }, //uint32_t
-	{ 0x08, 0x08 }, //int64_t
-	{ 0x09, 0x08 }, //uint64_t
-	{ 0x0C, 0x04 } //float
+	{ 0x01, 0x01 }, //string - number of bytes to use for strlen
+	{ 0x02, sizeof(int8_t) }, //int8_t
+	{ 0x03, sizeof(uint8_t) }, //uint8_t
+	{ 0x04, sizeof(int16_t) }, //int16_t
+	{ 0x05, sizeof(uint16_t) }, //uint16_t
+	{ 0x06, sizeof(int32_t) }, //int32_t
+	{ 0x07, sizeof(uint32_t) }, //uint32_t
+	{ 0x08, sizeof(int64_t) }, //int64_t
+	{ 0x09, sizeof(uint64_t) }, //uint64_t
+	{ 0x0C, sizeof(float) } //float
 };
