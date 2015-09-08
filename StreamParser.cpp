@@ -61,10 +61,10 @@ int16_t StreamParser::parse() {
 					this->setState(PS_IDLE);
 					break;
 				}
-				this->buffer[this->bufferIndex] = readByte;
+				this->buffer[this->bufferIndex] = (uint8_t)readByte;
 				this->bufferIndex++;
 
-				if((this->bufferIndex + 1) >= this->packetHeader.size) {
+				if((this->bufferIndex + 1) > this->packetHeader.size) {
 					this->setState(PS_IDLE);
 					for(uint8_t i = 0; i < this->numTypeHandlers; i++) {
 						if(this->handlers[i].type == this->packetHeader.type) {

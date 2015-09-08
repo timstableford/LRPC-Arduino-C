@@ -15,7 +15,6 @@ bool Object::y(uint8_t index, x data) { \
 		return false; \
 	} \
 	\
-	printf("index = %d, data = 0x%x, fetch = 0x%x\n", index, data, this->y(index)); \
 	*pointer = ct(data); \
 	\
 	return true; \
@@ -47,7 +46,7 @@ Object::Object(uint8_t *buffer) {
 	this->numObjects = buffer[0];
 	if(numObjects > 0) {
 		uint8_t stringCount = this->strNum(this->numObjects);
-		this->dataTable = &(buffer[this->numObjects + (stringCount * this->typeSize(T_STRING))]);
+		this->dataTable = &(buffer[this->numObjects + (stringCount * this->typeSize(T_STRING)) + 1]);
 	} else {
 		this->dataTable = 0;
 	}
@@ -146,7 +145,7 @@ uint16_t Object::writeTo(NetworkWriter writer) {
 	}
 	
 	uint16_t written = 0;
-	
+
 	written += writer(&(this->numObjects), 1) ? 1 : 0;
 	
 	uint16_t size = this->numObjects + this->strNum(this->numObjects);

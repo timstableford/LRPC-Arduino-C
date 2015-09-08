@@ -26,7 +26,6 @@ void RPC::typeHandlerCallback(uint8_t *buffer, uint16_t size) {
 	if(obj.getNumObjects() > 0) {
 		if(obj.objectTypeAt(0) == Object::T_UINT16) {
 			for(uint16_t i = 0; i < this->numRPCs; i++) {
-				printf("%d:%d\n", this->rpcs[i].functionID, obj.uint16At(0));
 				if(this->rpcs[i].functionID == obj.uint16At(0)) {
 					this->rpcs[i].callback(obj);
 					break;

@@ -14,6 +14,12 @@ uint16_t testBufferIndex;
 uint8_t testCallBuffer[] = { 0x0, 0x8, 0x0, 0x19, 0x79, 0xae, 0x5, 0x5, 0x2, 0x3, 0x4, 0x1, 0xc, 0x0, 0xa, 0xf6, 0xa, 0x1, 0x40, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x0 };
 uint16_t testCallIndex = 0;
 
+void printHex(void *buffer, int length) {
+	for(int i = 0; i < length; i++) {
+		printf("0x%x, ", ((uint8_t *)(buffer))[i]);
+	}
+}
+
 uint16_t writer(uint8_t *data, uint16_t size) {
 	for(uint16_t i = 0; i < size; i++) {
 		printf("0x%x, ", data[i]);
@@ -22,7 +28,7 @@ uint16_t writer(uint8_t *data, uint16_t size) {
 }
 
 void helloWorld(Object &obj) {
-	printf("hello world function called\n");
+	printf("hello world function called %d, %d, %d, %s\n", obj.int8At(1), obj.uint8At(2), obj.int16At(3), obj.strAt(4));
 }
 
 RPC::RPCContainer rpcs[] = {
@@ -33,15 +39,7 @@ RPC::RPCContainer rpcs[] = {
 
 RPC rpc(writer, rpcs, 1);
 
-void printHex(void *buffer, int length) {
-	for(int i = 0; i < length; i++) {
-		printf("0x%x, ", ((uint8_t *)(buffer))[i]);
-	}
-}
-
 void functionCallback(uint8_t *buffer, uint16_t size) {
-	printHex(buffer, size);
-	printf("\n");
 	rpc.typeHandlerCallback(buffer, size);
 }
 
@@ -63,6 +61,8 @@ int main(int argc, char *argv[]) {
 	uint8_t buffer[256];
 	uint16_t bufferSize = 256;
 	StreamParser p(streamReader, buffer, bufferSize, handlers, 1);
+	
+	while(p.parse() >= 0);
 	
 	int16_t theInt = 400;
 	uint16_t functionID = 1;
@@ -95,13 +95,12 @@ int main(int argc, char *argv[]) {
 	testBufferSize = sizeof(StreamParser::PacketHeader);
 	testBufferIndex = 0;
 	
-	while(p.parse() >= 0);
-	
 	printf("rpc call: ");
 	if(rpc.call(10, "cCds", -10, 10, 320, "hello world") <= 0) {
 		printf("error doing rpc call");
 	}
 	printf("\n");
+	
 }
 
 #endif
