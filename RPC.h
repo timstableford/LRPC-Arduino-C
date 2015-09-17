@@ -4,13 +4,14 @@
 #include "Object.h"
 #include "NetworkUtil.h"
 
-typedef void (*RPCCallback)(Object &obj);
+typedef void (*RPCCallback)(void *userdata, Object &obj);
 
 class RPC {
 	public:
 		typedef struct {
 			uint16_t functionID;
 			RPCCallback callback;
+			void *userdata;
 		} RPCContainer;
 		RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs, void *userdata);
 		~RPC();

@@ -5,7 +5,7 @@
 
 #define TYPE_FUNCTION_CALL 8
 
-typedef void (*TypeHandlerCallback)(uint8_t *buffer, uint16_t size);
+typedef void (*TypeHandlerCallback)(void *userdata, uint8_t *buffer, uint16_t size);
 
 class StreamParser {
 	public:
@@ -23,6 +23,7 @@ class StreamParser {
 		typedef struct {
 			uint16_t type;
 			TypeHandlerCallback callback;
+			void *userdata;
 		} TypeHandler;
 	
 		StreamParser(NetworkReader serialReader,

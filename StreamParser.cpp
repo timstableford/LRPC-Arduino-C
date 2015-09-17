@@ -71,7 +71,7 @@ int16_t StreamParser::parse() {
 					this->setState(PS_IDLE);
 					for(uint8_t i = 0; i < this->numTypeHandlers; i++) {
 						if(this->handlers[i].type == this->packetHeader.type) {
-							this->handlers[i].callback(this->buffer, this->bufferIndex + 1);
+							this->handlers[i].callback(this->handlers[i].userdata, this->buffer, this->bufferIndex + 1);
 							break;
 						}
 					}

@@ -9,15 +9,13 @@
 #include "RPC.h"
 #include "Object.h"
 
-RPC *rpc;
-
-void rpcCallback(Object &obj) {
+void rpcCallback(void *userdata, Object &obj) {
 	std::cout << "rpc callback called" << std::endl;
 	std::cout << "Data is: " << obj.strAt(1) << std::endl;
 }
 
-void typeHandlerCallback(uint8_t *buffer, uint16_t size) {
-	rpc->typeHandlerCallback(buffer, size);
+void rpcHandlerCallback(void *userdata, uint8_t *buffer, uint16_t size) {
+	((RPC *)userdata)->typeHandlerCallback(buffer, size);
 }
 
 int main(int argc, char *argv[]) {
@@ -25,30 +23,28 @@ int main(int argc, char *argv[]) {
 	if(argc > 1) {
 		TCPStreamConnector::TCPSocketServer sock(3333);
 
-		//while(true) {
-			sock.accept();
+		sock.accept();
 
-			StreamParser::TypeHandler h;
-			h.type = TYPE_FUNCTION_CALL;
-			h.callback = typeHandlerCallback;
+		RPC::RPCContainer rpcc;
+		rpcc.functionID = 10;
+		rpcc.callback = rpcCallback;
 
-			StreamParser p(TCPStreamConnector::networkReader, buffer, 1024, &h, 1, &sock);
+		RPC rpc(TCPStreamConnector::networkWriter, &rpcc, 1, &sock);
 
-			RPC::RPCContainer rpcc;
-			rpcc.functionID = 10;
-			rpcc.callback = rpcCallback;
+		StreamParser::TypeHandler h;
+		h.type = TYPE_FUNCTION_CALL;
+		h.callback = rpcHandlerCallback;
+		h.userdata = &rpc;
 
-			RPC rpca(TCPStreamConnector::networkWriter, &rpcc, 1, &sock);
-			rpc = &rpca;
+		StreamParser p(TCPStreamConnector::networkReader, buffer, 1024, &h, 1, &sock);
 
-			while(p.parse() >= 0);
-		//}
+		while(p.parse() >= 0);
 
 		std::cout << "Socket closed" << std::endl;
 	} else {
 		TCPStreamConnector::TCPSocketClient sock("localhost", "3333");
-		RPC rpca(TCPStreamConnector::networkWriter, NULL, 0, &sock);
-		rpca.call(10, "s", "hello world");
+		RPC rpc(TCPStreamConnector::networkWriter, NULL, 0, &sock);
+		rpc.call(10, "s", "hello world");
 	}
 }
 
