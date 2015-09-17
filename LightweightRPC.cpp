@@ -1,4 +1,4 @@
-#ifndef TEST
+#if !defined(TEST) && defined(LINUX)
 
 #include <ctime>
 #include <iostream>
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 
 		std::cout << "Socket closed" << std::endl;
 	} else {
-		TCPStreamConnector::TCPSocketClient sock("localhost", "3333");
+		TCPStreamConnector::TCPSocketClient sock((char *)"localhost", (char *)"3333");
 		RPC rpc(TCPStreamConnector::networkWriter, NULL, 0, &sock);
 		rpc.call(10, "s", "hello world");
 	}
