@@ -1,7 +1,7 @@
 CXXFLAGS =	-g -Wall -fmessage-length=0 -std=c++11 -DLINUX
 OBJDIR = build
 
-SRCS = Object.cpp StreamParser.cpp RPC.cpp StreamParserTest.cpp TCPStreamConnector.cpp LightweightRPC.cpp
+SRCS = Object.cpp StreamParser.cpp RPC.cpp StreamParserTest.cpp TCPStreamConnector.cpp SocketRPCTest.cpp
 OBJS = $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRCS))
 
 LIBS = -lboost_system -lboost_thread -lpthread
@@ -17,7 +17,7 @@ $(TARGET): setup $(OBJS)
 all:	$(TARGET)
 
 test: CXXFLAGS += -DTEST
-test: clean $(TARGET)
+test: $(TARGET)
 
 setup:
 	mkdir -p $(OBJDIR)

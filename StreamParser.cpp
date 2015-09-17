@@ -32,7 +32,7 @@ StreamParser::PacketHeader StreamParser::makePacket(uint16_t type, uint16_t size
 	return ph;
 }
 
-bool StreamParser::parseHeader(StreamParser::PacketHeader &ph) {
+bool StreamParser::checkHeader(StreamParser::PacketHeader &ph) {
 	if(crc16((uint8_t *)(&ph), (uint16_t)(sizeof(ph) - sizeof(ph.crc))) != ph.crc) {
 		return false;
 	}
@@ -54,7 +54,7 @@ int16_t StreamParser::parse() {
 				}
 				((uint8_t *)(&(this->packetHeader)))[sizeof(PacketHeader) - 1] = (uint8_t)readByte;
 
-				if(parseHeader(this->packetHeader)) {
+				if(checkHeader(this->packetHeader)) {
 					this->setState(PS_PARSING);
 				}
 				break;

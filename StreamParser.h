@@ -37,7 +37,7 @@ class StreamParser {
 		
 		static uint16_t crc16(uint8_t *data_p, uint16_t length);
 		static PacketHeader makePacket(uint16_t type, uint16_t size);
-		static bool parseHeader(PacketHeader &ph);
+		static bool checkHeader(PacketHeader &ph);
 	private:
 		NetworkReader serialReader;
 		PacketHeader packetHeader;

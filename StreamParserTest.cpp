@@ -14,6 +14,8 @@ uint16_t testBufferIndex;
 uint8_t testCallBuffer[] = { 0x0, 0x8, 0x0, 0x19, 0x79, 0xae, 0x5, 0x5, 0x2, 0x3, 0x4, 0x1, 0xc, 0x0, 0xa, 0xf6, 0xa, 0x1, 0x40, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x0 };
 uint16_t testCallIndex = 0;
 
+void socketTest();
+
 void printHex(void *buffer, int length) {
 	for(int i = 0; i < length; i++) {
 		printf("0x%x, ", ((uint8_t *)(buffer))[i]);
@@ -27,25 +29,25 @@ uint16_t writer(void *userdata, uint8_t *data, uint16_t size) {
 	return size;
 }
 
-void helloWorld(Object &obj) {
+void helloWorld(void *userdata, Object &obj) {
 	printf("hello world function called %d, %d, %d, %s\n", obj.int8At(1), obj.uint8At(2), obj.int16At(3), obj.strAt(4));
 }
 
 RPC::RPCContainer rpcs[] = {
 	{
-		10, helloWorld
+		10, helloWorld, NULL
 	}
 };
 
-RPC rpc(writer, rpcs, 1);
+RPC rpc(writer, rpcs, 1, NULL);
 
-void functionCallback(uint8_t *buffer, uint16_t size) {
+void functionCallback(void *userdata, uint8_t *buffer, uint16_t size) {
 	rpc.typeHandlerCallback(buffer, size);
 }
 
 StreamParser::TypeHandler handlers[] = {
 	{
-		TYPE_FUNCTION_CALL, functionCallback
+		TYPE_FUNCTION_CALL, functionCallback, NULL
 	}
 };
 
@@ -58,6 +60,7 @@ int16_t streamReader(void *userdata) {
 }
 
 int main(int argc, char *argv[]) {
+	bool error = false;
 	uint8_t buffer[256];
 	uint16_t bufferSize = 256;
 	StreamParser p(streamReader, buffer, bufferSize, handlers, 1, NULL);
@@ -105,7 +108,7 @@ int main(int argc, char *argv[]) {
 	
 	printf("generated packet: ");
 	printHex(&ph, sizeof(ph));
-	o.writeTo(writer);
+	o.writeTo(writer, NULL);
 	printf("\n");
 	
 	
@@ -119,6 +122,16 @@ int main(int argc, char *argv[]) {
 	}
 	printf("\n");
 	
+	if(error) {
+		printf("FAIELD: Object & RPC buffer tests\n");
+	} else {
+		printf("PASSED: Object & RPC buffer tests\n");
+	}
+
+	printf("Calling socket tests\n");
+	socketTest();
+	printf("PASSED: Socket Tests\n");
+
 }
 
 #endif

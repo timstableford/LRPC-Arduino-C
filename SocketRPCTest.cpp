@@ -1,4 +1,4 @@
-#if !defined(TEST) && defined(LINUX)
+#if defined(TEST) && defined(LINUX)
 
 #include <ctime>
 #include <iostream>
@@ -14,11 +14,11 @@
 void rpcCallback(void *userdata, Object &obj) {
 	switch(obj.uint16At(0)) {
 	case 1:
-		std::cout << "(S) Data from client is: " << obj.strAt(1) << std::endl;
+		std::cout << "(S) Data from client is: " << obj.strAt(1) << std::endl << std::flush;
 		((RPC *)userdata)->call(2, "s", "Quitting");
 		break;
 	case 2:
-		std::cout << "(C) Quit called from server\n" << std::endl;
+		std::cout << "(C) Quit called from server\n" << std::endl << std::flush;
 		*((bool *)userdata) = false;
 		break;
 	}
@@ -32,9 +32,9 @@ void serverFunc() {
 	uint8_t buffer[1024];
 	TCPStreamConnector::TCPSocketServer sock(3333);
 
-	std::cout << "(S) Listening for client..." << std::endl;
+	std::cout << "(S) Listening for client..." << std::endl << std::flush;
 	sock.accept();
-	std::cout << "(S) Client connected" << std::endl;
+	std::cout << "(S) Client connected" << std::endl << std::flush;
 
 	RPC::RPCContainer rpcc;
 	rpcc.functionID = 1;
@@ -52,7 +52,7 @@ void serverFunc() {
 
 	while(p.parse() >= 0);
 
-	std::cout << "(S) Server socket closed" << std::endl;
+	std::cout << "(S) Server socket closed" << std::endl << std::flush;
 }
 
 void clientFunc() {
@@ -74,20 +74,22 @@ void clientFunc() {
 	uint8_t buffer[1024];
 	StreamParser p(TCPStreamConnector::networkReader, buffer, 1024, &h, 1, &sock);
 
+	std::cout << "(C) Calling hello world to server" << std::endl << std::flush;
 	rpc.call(1, "s", "hello world");
 
+	std::cout << "(C) Waiting for response from server" << std::endl << std::flush;
 	while(p.parse() >= 0 && run);
 }
 
-int main(int argc, char *argv[]) {
+void socketTest() {
 	boost::thread serverThread(serverFunc);
 	usleep(1000000);
 	boost::thread clientThread(clientFunc);
 
 	clientThread.join();
-	std::cout << "(M) Client thread ended" << std::endl;
+	std::cout << "(M) Client thread ended" << std::endl << std::flush;
 	serverThread.join();
-	std::cout << "(M) Server thread ended" << std::endl;
+	std::cout << "(M) Server thread ended" << std::endl << std::flush;
 }
 
 #endif
