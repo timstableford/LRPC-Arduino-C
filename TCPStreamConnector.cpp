@@ -36,13 +36,11 @@ TCPSocketServer::~TCPSocketServer() {
 }
 
 void TCPSocketServer::accept() {
-	std::cout << "Listening for connection on port" << std::endl;
 	if(this->sock != NULL) {
 		delete(this->sock);
 		this->sock = new tcp::socket(*io_service);
 	}
 	this->acceptor->accept(*sock);
-	std::cout << "Client connected" << std::endl;
 }
 
 tcp::socket *TCPSocket::getSocket() {
