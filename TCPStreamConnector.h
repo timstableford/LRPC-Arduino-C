@@ -16,17 +16,32 @@ using boost::asio::ip::tcp;
 
 
 namespace TCPStreamConnector {
-	class TCPSocketServer {
+	class TCPSocket {
+	public:
+		tcp::socket *getSocket();
+	protected:
+		tcp::socket *sock;
+	};
+
+	class TCPSocketServer : TCPSocket {
 	public:
 		TCPSocketServer(int port);
 		~TCPSocketServer();
 		void accept();
 		tcp::socket *getSocket();
 	private:
-		tcp::socket *sock;
 		tcp::acceptor *acceptor;
 		boost::asio::io_service *io_service;
 	};
+
+	class TCPSocketClient : TCPSocket {
+	public:
+		TCPSocketClient(char *endpoint, char *port);
+		~TCPSocketClient();
+	private:
+		boost::asio::io_service *io_service;
+	};
+
 	uint16_t networkWriter(void *userdata, uint8_t *data, uint16_t length);
 	int16_t networkReader(void *userdata);
 }

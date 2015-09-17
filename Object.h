@@ -18,7 +18,7 @@ class Object {
 		uint8_t getNumObjects();
 		uint8_t objectTypeAt(uint8_t index);
 		
-		uint16_t writeTo(NetworkWriter writer);
+		uint16_t writeTo(NetworkWriter writer, void *userdata);
 		
 		int8_t int8At(uint8_t index);
 		bool int8At(uint8_t index, int8_t data);

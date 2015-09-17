@@ -12,7 +12,7 @@ class RPC {
 			uint16_t functionID;
 			RPCCallback callback;
 		} RPCContainer;
-		RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs);
+		RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs, void *userdata);
 		~RPC();
 		void typeHandlerCallback(uint8_t *buffer, uint16_t size);
 		
@@ -23,6 +23,7 @@ class RPC {
 		NetworkWriter writer;
 		RPCContainer *rpcs;
 		uint16_t numRPCs;
+		void *userdata;
 
 };
 

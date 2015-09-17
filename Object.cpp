@@ -171,20 +171,20 @@ uint16_t Object::getSize() {
 	return 1 + this->numObjects + (this->typeSize(T_STRING) * strNum(this->numObjects)) + this->getDataSize();
 }
 
-uint16_t Object::writeTo(NetworkWriter writer) {
+uint16_t Object::writeTo(NetworkWriter writer, void *userdata) {
 	if(this->numObjects == 0 || this->dataTable == NULL) {
 		return 0;
 	}
 	
 	uint16_t written = 0;
 
-	written += writer(NULL, &(this->numObjects), 1) ? 1 : 0;
+	written += writer(userdata, &(this->numObjects), 1) ? 1 : 0;
 	
 	uint16_t size = this->numObjects + this->strNum(this->numObjects);
-	written += writer(NULL, this->indexTable, size);
+	written += writer(userdata, this->indexTable, size);
 	
 	size = this->getDataSize();
-	written += writer(NULL, this->dataTable, size);
+	written += writer(userdata, this->dataTable, size);
 	
 	return written;
 }

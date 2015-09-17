@@ -1,10 +1,10 @@
-CXXFLAGS =	-O2 -g -Wall -fmessage-length=0 -std=c++11 -DLINUX
+CXXFLAGS =	-g -Wall -fmessage-length=0 -std=c++11 -DLINUX
 OBJDIR = build
 
 SRCS = Object.cpp StreamParser.cpp RPC.cpp StreamParserTest.cpp TCPStreamConnector.cpp LightweightRPC.cpp
 OBJS = $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRCS))
 
-LIBS = -lboost_system -lboost_thread
+LIBS = -lboost_system -lboost_thread -lpthread
 
 TARGET = LightweightRPC
 

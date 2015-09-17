@@ -38,10 +38,11 @@ void RPC::typeHandlerCallback(uint8_t *buffer, uint16_t size) {
 	}
 }
 
-RPC::RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs) {
+RPC::RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs, void *userdata) {
 	this->writer = writer;
 	this->rpcs = rpcs;
 	this->numRPCs = numRPCs;
+	this->userdata = userdata;
 }
 
 RPC::~RPC() {
@@ -201,12 +202,12 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	
 	StreamParser::PacketHeader ph = StreamParser::makePacket(TYPE_FUNCTION_CALL, o.getSize());
 	
-	uint16_t written = this->writer(NULL, (uint8_t *)(&ph), sizeof(ph));
+	uint16_t written = this->writer(this->userdata, (uint8_t *)(&ph), sizeof(ph));
 	if(written < sizeof(ph)) {
 		return 0;
 	}
 	
-	written += o.writeTo(this->writer);
+	written += o.writeTo(this->writer, userdata);
 	
 	return written;
 }
