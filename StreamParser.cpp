@@ -6,14 +6,17 @@ StreamParser::StreamParser(NetworkReader serialReader,
 		uint8_t *buffer,
 		uint16_t bufferSize,
 		TypeHandler *handlers,
-		uint8_t numTypeHandlers)
+		uint8_t numTypeHandlers,
+		void *userdata)
 {
 	this->serialReader = serialReader;
 	this->buffer = buffer;
 	this->bufferSize = bufferSize;
+	this->bufferIndex = 0;
 	this->state = PS_IDLE;
 	this->handlers = handlers;
 	this->numTypeHandlers = numTypeHandlers;
+	this->userdata = userdata;
 }
 
 StreamParser::~StreamParser() {
@@ -41,7 +44,7 @@ bool StreamParser::parseHeader(StreamParser::PacketHeader &ph) {
 }
 
 int16_t StreamParser::parse() {
-	int16_t readByte = this->serialReader();
+	int16_t readByte = this->serialReader(this->userdata);
 	if(readByte >= 0) {
 		switch(this->state) {
 			case PS_IDLE:

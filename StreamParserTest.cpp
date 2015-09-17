@@ -1,4 +1,4 @@
-#ifdef LINUX
+#if defined(LINUX) && defined(TEST)
 
 #include "StreamParser.h"
 #include "Object.h"
@@ -20,7 +20,7 @@ void printHex(void *buffer, int length) {
 	}
 }
 
-uint16_t writer(uint8_t *data, uint16_t size) {
+uint16_t writer(void *userdata, uint8_t *data, uint16_t size) {
 	for(uint16_t i = 0; i < size; i++) {
 		printf("0x%x, ", data[i]);
 	}
@@ -49,7 +49,7 @@ StreamParser::TypeHandler handlers[] = {
 	}
 };
 
-int16_t streamReader() {
+int16_t streamReader(void *userdata) {
 	if(testCallIndex < sizeof(testCallBuffer)) {
 		return (int16_t)(testCallBuffer[testCallIndex++]);
 	} else {
@@ -60,7 +60,7 @@ int16_t streamReader() {
 int main(int argc, char *argv[]) {
 	uint8_t buffer[256];
 	uint16_t bufferSize = 256;
-	StreamParser p(streamReader, buffer, bufferSize, handlers, 1);
+	StreamParser p(streamReader, buffer, bufferSize, handlers, 1, NULL);
 	
 	while(p.parse() >= 0);
 	

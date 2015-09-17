@@ -29,7 +29,8 @@ class StreamParser {
 			uint8_t *buffer,
 			uint16_t bufferSize,
 			TypeHandler *handlers,
-			uint8_t numTypeHandlers);
+			uint8_t numTypeHandlers,
+			void *userdata);
 		~StreamParser();
 		int16_t parse();
 		
@@ -46,6 +47,7 @@ class StreamParser {
 		uint16_t bufferIndex;
 		TypeHandler *handlers;
 		uint8_t numTypeHandlers;
+		void *userdata;
 };
 
 #endif

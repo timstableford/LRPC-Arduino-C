@@ -40,7 +40,7 @@
 #define ntohll(x) ((1==ntohl(1)) ? (x) : ((uint64_t)ntohl((x) & 0xFFFFFFFF) << 32) | ntohl((x) >> 32))
 #endif
 
-typedef uint16_t (*NetworkWriter)(uint8_t *data, uint16_t length);
-typedef int16_t (*NetworkReader)();
+typedef uint16_t (*NetworkWriter)(void *userdata, uint8_t *data, uint16_t length);
+typedef int16_t (*NetworkReader)(void *userdata);
 
 #endif
