@@ -16,6 +16,7 @@ class RPC {
 		RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs, void *userdata);
 		~RPC();
 		void typeHandlerCallback(uint8_t *buffer, uint16_t size);
+		void setHandlers(RPCContainer *rpcs, uint16_t numRPCs);
 		
 		uint16_t call(uint16_t functionID, const char *fmt, ...);
 		

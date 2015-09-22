@@ -48,6 +48,11 @@ RPC::RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs, void *userd
 RPC::~RPC() {
 }
 
+void RPC::setHandlers(RPCContainer *rpcs, uint16_t numRPCs) {
+	this->rpcs = rpcs;
+	this->numRPCs = numRPCs;
+}
+
 Object::TYPES RPC::getType(char c) {
 	switch(c) {
 		case 's':
