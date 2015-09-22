@@ -1,2 +1,4 @@
 A byte based reasonably lightweight library for serializaing and deserializing data for network transmission.
 Also included is a class to send and receive packets over a byte based stream and route these packets based on their type.
+
+Included is code for operation over TCP sockets as a client and server. This is tested/an example can be found in SocketRPCTest.cpp
