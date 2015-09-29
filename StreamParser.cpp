@@ -98,13 +98,20 @@ void StreamParser::setState(ParserState st) {
 }
 
 uint16_t StreamParser::crc16(uint8_t *data_p, uint16_t length) {
-    uint8_t x;
-    uint16_t crc = 0xFFFF;
+    uint16_t crc = crcInit();
 
     while (length--){
-        x = crc >> 8 ^ *data_p++;
-        x ^= x>>4;
-        crc = (crc << 8) ^ ((uint16_t)(x << 12)) ^ ((uint16_t)(x <<5)) ^ ((uint16_t)x);
+        crc = crcAppend(crc, *data_p++);
     }
     return crc;
+}
+
+inline uint16_t StreamParser::crcInit() {
+	return 0xFFFF;
+}
+
+inline uint16_t StreamParser::crcAppend(uint16_t crc, uint8_t data) {
+	uint8_t x = crc >> 8 ^ data;
+	x ^= x >> 4;
+	return (crc << 8) ^ ((uint16_t)(x << 12)) ^ ((uint16_t)(x << 5)) ^ ((uint16_t)x);
 }

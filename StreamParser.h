@@ -36,6 +36,8 @@ class StreamParser {
 		int16_t parse();
 		
 		static uint16_t crc16(uint8_t *data_p, uint16_t length);
+		static inline uint16_t crcInit();
+		static inline uint16_t crcAppend(uint16_t crc, uint8_t data);
 		static PacketHeader makePacket(uint16_t type, uint16_t size);
 		static bool checkHeader(PacketHeader &ph);
 	private:
