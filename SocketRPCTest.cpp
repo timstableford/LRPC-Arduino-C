@@ -19,6 +19,7 @@ void rpcCallback(void *userdata, Object &obj) {
 		break;
 	case 2:
 		std::cout << "(C) Quit called from server\n" << std::endl << std::flush;
+		std::cout << "Data is " << obj.strAt(1) << std::endl << std::flush;
 		*((bool *)userdata) = false;
 		break;
 	}
@@ -58,7 +59,7 @@ void serverFunc() {
 void clientFunc() {
 	bool run = true;
 
-	TCPStreamConnector::TCPSocketClient sock((char *)"localhost", (char *)"3333");
+	TCPStreamConnector::TCPSocketClient sock((char *)"localhost", (char *)"5000");
 
 	RPC::RPCContainer rpcc;
 	rpcc.functionID = 2;
@@ -82,14 +83,14 @@ void clientFunc() {
 }
 
 void socketTest() {
-	boost::thread serverThread(serverFunc);
-	usleep(1000000);
+	//boost::thread serverThread(serverFunc);
+	//usleep(1000000);
 	boost::thread clientThread(clientFunc);
 
 	clientThread.join();
 	std::cout << "(M) Client thread ended" << std::endl << std::flush;
-	serverThread.join();
-	std::cout << "(M) Server thread ended" << std::endl << std::flush;
+	//serverThread.join();
+	//std::cout << "(M) Server thread ended" << std::endl << std::flush;
 }
 
 #endif

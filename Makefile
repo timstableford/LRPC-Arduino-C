@@ -16,7 +16,7 @@ $(TARGET): setup $(OBJS)
 
 all:	$(TARGET)
 
-test: CXXFLAGS += -DTEST
+test: CXXFLAGS += -DTEST -DLINUX
 test: $(TARGET)
 
 setup:

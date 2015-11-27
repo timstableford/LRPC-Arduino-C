@@ -138,7 +138,7 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	uint16_t length = 0, indexSize = 0, numStr = 0; //index size start as 1 for function call id
 	for(uint8_t i = 0; i < numArgs; i++) {
 		if(args[i].type == Object::T_STRING) {
-			length += strlen(args[i].data.str) + 1;
+			length += strlen(args[i].data.str);
 			numStr++;
 		} else {
 			length += Object::typeSize(args[i].type);
@@ -156,7 +156,7 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	for(uint8_t i = 0; i < numArgs; i++) {
 		indexTable[i] = args[i].type;
 		if(indexTable[i] == Object::T_STRING) {
-			indexTable[indexSize + stringIndex] = strlen(args[i].data.str) + 1;
+			indexTable[indexSize + stringIndex] = strlen(args[i].data.str);
 			stringIndex++;
 		}
 	}
@@ -171,7 +171,7 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 		}
 		switch(args[i].type) {
 			case Object::T_STRING:
-				o.strAt(i, args[i].data.str, (uint8_t)(strlen(args[i].data.str) + 1));
+				o.strAt(i, args[i].data.str, (uint8_t)(strlen(args[i].data.str)));
 				break;
 			case Object::T_INT8:
 				o.int8At(i, args[i].data.int8);

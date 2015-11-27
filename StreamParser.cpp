@@ -27,16 +27,17 @@ StreamParser::PacketHeader StreamParser::makePacket(uint16_t type, uint16_t size
 	PacketHeader ph;
 	ph.type = htons(type);
 	ph.size = htons(size);
-	ph.crc = crc16((uint8_t *)(&ph), (uint16_t)(sizeof(ph) - sizeof(ph.crc)));
+	ph.crc = htons(crc16((uint8_t *)(&ph), (uint16_t)(sizeof(ph) - sizeof(ph.crc))));
 	
 	return ph;
 }
 
 bool StreamParser::checkHeader(StreamParser::PacketHeader &ph) {
-	if(crc16((uint8_t *)(&ph), (uint16_t)(sizeof(ph) - sizeof(ph.crc))) != ph.crc) {
+	if(crc16((uint8_t *)(&ph), (uint16_t)(sizeof(ph) - sizeof(ph.crc))) != ntohs(ph.crc)) {
 		return false;
 	}
 	
+	ph.crc = ntohs(ph.crc);
 	ph.type = ntohs(ph.type);
 	ph.size = ntohs(ph.size);
 	
