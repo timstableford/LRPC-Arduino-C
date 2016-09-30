@@ -1,8 +1,8 @@
 #ifndef __NETWORK_UTIL_H__
 #define __NETWORK_UTIL_H__
 
-#ifdef LINUX
 #include <stdint.h>
+#ifdef LINUX
 #include <stdio.h>
 #endif
 

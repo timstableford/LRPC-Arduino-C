@@ -1,5 +1,7 @@
 #include "Object.h"
 
+#include <stdlib.h>
+
 #define INT_GETSET(x, y, ct, cf) x Object::y(uint8_t index) { \
 	x *pointer = (x *)this->pointerAt(index); \
 	if(pointer == NULL) { \
