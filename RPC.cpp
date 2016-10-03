@@ -2,7 +2,6 @@
 #include "RPC.h"
 #include "StreamParser.h"
 #include "NetworkUtil.h"
-
 #include <stdarg.h>
 #include <string.h>
 
@@ -30,7 +29,7 @@ void RPC::typeHandlerCallback(uint8_t *buffer, uint16_t size) {
 		if(obj.objectTypeAt(0) == Object::T_UINT16) {
 			for(uint16_t i = 0; i < this->numRPCs; i++) {
 				if(this->rpcs[i].functionID == obj.uint16At(0)) {
-					this->rpcs[i].callback(this->rpcs[i].userdata, obj);
+					this->rpcs[i].callback(*this, obj, this->rpcs[i].userdata);
 					break;
 				}
 			}
@@ -43,9 +42,16 @@ RPC::RPC(NetworkWriter writer, RPCContainer *rpcs, uint16_t numRPCs, void *userd
 	this->rpcs = rpcs;
 	this->numRPCs = numRPCs;
 	this->userdata = userdata;
+  this->handler.type = TYPE_FUNCTION_CALL;
+  this->handler.callback = typeHandlerWrapper;
+  this->handler.userdata = this;
 }
 
 RPC::~RPC() {
+}
+
+const StreamParser::TypeHandler *RPC::getHandler() {
+  return &(this->handler);
 }
 
 void RPC::setHandlers(RPCContainer *rpcs, uint16_t numRPCs) {
@@ -156,7 +162,8 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 	for(uint8_t i = 0; i < numArgs; i++) {
 		indexTable[i] = args[i].type;
 		if(indexTable[i] == Object::T_STRING) {
-			indexTable[indexSize + stringIndex] = strlen(args[i].data.str);
+      // +1 for null terminator.
+			indexTable[indexSize + stringIndex] = strlen(args[i].data.str) + 1;
 			stringIndex++;
 		}
 	}
@@ -171,7 +178,8 @@ uint16_t RPC::call(uint16_t functionID, const char *fmt, ...) {
 		}
 		switch(args[i].type) {
 			case Object::T_STRING:
-				o.strAt(i, args[i].data.str, (uint8_t)(strlen(args[i].data.str)));
+        // +1 for the null terminator.
+				o.strAt(i, args[i].data.str, (uint8_t)(strlen(args[i].data.str) + 1));
 				break;
 			case Object::T_INT8:
 				o.int8At(i, args[i].data.int8);

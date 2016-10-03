@@ -33,6 +33,19 @@ INT_GETSET(uint16_t, uint16At, htons, ntohs)
 INT_GETSET(uint32_t, uint32At, htonl, ntohl)
 INT_GETSET(uint64_t, uint64At, htonll, ntohll)
 
+static Object::ObjectType typesArray[] = {
+  { Object::T_STRING, 0x01 }, //string - number of bytes to use for strlen
+  { Object::T_INT8, sizeof(int8_t) }, //int8_t
+  { Object::T_UINT8, sizeof(uint8_t) }, //uint8_t
+  { Object::T_INT16, sizeof(int16_t) }, //int16_t
+  { Object::T_UINT16, sizeof(uint16_t) }, //uint16_t
+  { Object::T_INT32, sizeof(int32_t) }, //int32_t
+  { Object::T_UINT32, sizeof(uint32_t) }, //uint32_t
+  { Object::T_INT64, sizeof(int64_t) }, //int64_t
+  { Object::T_UINT64, sizeof(uint64_t) }, //uint64_t
+  { Object::T_FLOAT, sizeof(float) } //float
+};
+
 Object::Object(uint8_t *indexTable, uint8_t numObjects, uint8_t *dataTable) {
 	this->indexTable = indexTable;
 	this->dataTable = dataTable;
@@ -193,8 +206,8 @@ uint16_t Object::writeTo(NetworkWriter writer, void *userdata) {
 
 uint8_t Object::typeSize(uint8_t type) {
 	for(uint8_t i = 0; i < NUM_TYPES; i++) {
-		if(typesArray[i][0] == type) {
-			return typesArray[i][1];
+		if(typesArray[i].type == type) {
+			return typesArray[i].size;
 		}
 	}
 	
@@ -212,16 +225,3 @@ void *Object::pointerAt(uint8_t index) {
 	
 	return (void *)(&(this->dataTable[this->indexOf(index)]));
 }
-
-const uint8_t Object::typesArray[][NUM_TYPES] = {
-	{ 0x01, 0x01 }, //string - number of bytes to use for strlen
-	{ 0x02, sizeof(int8_t) }, //int8_t
-	{ 0x03, sizeof(uint8_t) }, //uint8_t
-	{ 0x04, sizeof(int16_t) }, //int16_t
-	{ 0x05, sizeof(uint16_t) }, //uint16_t
-	{ 0x06, sizeof(int32_t) }, //int32_t
-	{ 0x07, sizeof(uint32_t) }, //uint32_t
-	{ 0x08, sizeof(int64_t) }, //int64_t
-	{ 0x09, sizeof(uint64_t) }, //uint64_t
-	{ 0x0C, sizeof(float) } //float
-};

@@ -1,4 +1,4 @@
-#if defined(LINUX) && defined(TEST)
+#if defined(LINUX)
 
 #include "StreamParser.h"
 #include "Object.h"
@@ -29,7 +29,7 @@ uint16_t writer(void *userdata, uint8_t *data, uint16_t size) {
 	return size;
 }
 
-void helloWorld(void *userdata, Object &obj) {
+void helloWorld(RPC &rpc, Object &obj, void *userdata) {
 	printf("hello world function called %d, %d, %d, %s\n", obj.int8At(1), obj.uint8At(2), obj.int16At(3), obj.strAt(4));
 }
 

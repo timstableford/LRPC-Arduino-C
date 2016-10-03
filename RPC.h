@@ -3,8 +3,10 @@
 
 #include "Object.h"
 #include "NetworkUtil.h"
+#include "StreamParser.h"
 
-typedef void (*RPCCallback)(void *userdata, Object &obj);
+class RPC;
+typedef void (*RPCCallback)(RPC &rpc, Object &obj, void *userdata);
 
 class RPC {
 	public:
@@ -17,15 +19,20 @@ class RPC {
 		~RPC();
 		void typeHandlerCallback(uint8_t *buffer, uint16_t size);
 		void setHandlers(RPCContainer *rpcs, uint16_t numRPCs);
+    const StreamParser::TypeHandler *getHandler();
 		
 		uint16_t call(uint16_t functionID, const char *fmt, ...);
 		
+    static void typeHandlerWrapper(void *userdata, uint8_t *buffer, uint16_t size) {
+      ((RPC *)userdata)->typeHandlerCallback(buffer, size);
+    }
 	private:
 		Object::TYPES getType(char c);
 		NetworkWriter writer;
 		RPCContainer *rpcs;
 		uint16_t numRPCs;
 		void *userdata;
+    StreamParser::TypeHandler handler;
 
 };
 

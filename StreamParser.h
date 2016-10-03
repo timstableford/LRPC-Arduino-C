@@ -29,7 +29,7 @@ class StreamParser {
 		StreamParser(NetworkReader serialReader,
 			uint8_t *buffer,
 			uint16_t bufferSize,
-			TypeHandler *handlers,
+			const TypeHandler *handlers,
 			uint8_t numTypeHandlers,
 			void *userdata);
 		~StreamParser();
@@ -48,7 +48,7 @@ class StreamParser {
 		uint8_t *buffer;
 		uint16_t bufferSize;
 		uint16_t bufferIndex;
-		TypeHandler *handlers;
+		const TypeHandler *handlers;
 		uint8_t numTypeHandlers;
 		void *userdata;
 };

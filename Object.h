@@ -46,8 +46,11 @@ class Object {
 		bool strAt(uint8_t index, char *str, uint16_t stringLen);
 		
 		void setDataBuffer(uint8_t *buffer);
-		
-		static const uint8_t typesArray[][NUM_TYPES];
+    
+    typedef struct {
+      uint8_t type;
+      uint8_t size;
+    } ObjectType;
 		
 		enum TYPES {
 			T_NONE,
