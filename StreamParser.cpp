@@ -57,7 +57,7 @@ int16_t StreamParser::parse() {
 
 				if(checkHeader(this->packetHeader)) {
 					this->setState(PS_PARSING);
-          this->bufferIndex = 0;
+					this->bufferIndex = 0;
 				}
 				break;
 			}
